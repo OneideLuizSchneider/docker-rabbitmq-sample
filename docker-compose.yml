@@ -1,0 +1,10 @@
+version: "3"
+
+services:
+  app:
+    build: .
+    command: node consumer.js
+    command: node worker.js
+    volumes:
+      - .:/opt/node-app/docker-rabbitmq-sample
+      - /opt/node-app/docker-rabbitmq-sample/node_modules
