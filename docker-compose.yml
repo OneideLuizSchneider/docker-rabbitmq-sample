@@ -1,10 +1,39 @@
-version: "3"
+version: '3'
 
 services:
-  app:
-    build: .
-    command: node consumer.js
-    command: node worker.js
+  worker:
+    build:
+      context: ./worker
+      dockerfile: Dockerfile
+    working_dir: /opt/node-app/docker-rabbitmq-sample
     volumes:
-      - .:/opt/node-app/docker-rabbitmq-sample
-      - /opt/node-app/docker-rabbitmq-sample/node_modules
+      - ./worker:/opt/node-app/docker-rabbitmq-sample
+    networks:
+      - app-network
+    environment:
+      - MESSAGE_QUEUE=amqp://localhost
+    links:
+      - rabbitmq
+
+  consumer:
+    build:
+      context: ./consumer
+      dockerfile: Dockerfile
+    working_dir: /opt/node-app/docker-rabbitmq-sample
+    volumes:
+      - ./consumer:/opt/node-app/docker-rabbitmq-sample
+    networks:
+      - app-network
+    environment:
+      - MESSAGE_QUEUE=amqp://localhost
+    links:
+      - rabbitmq
+
+  rabbitmq:
+    image: rabbitmq:latest
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge            

@@ -5,8 +5,8 @@ WORKDIR /opt/node-app/docker-rabbitmq-sample
 
 COPY package*.json ./
 
+VOLUME [ "/opt/node-app/docker-rabbitmq-sample" ]
+
 RUN npm install
 
-COPY . .
-
-CMD ["node", "consumer.js", "node", "worker.js"]
+CMD [ "node", "consumer.js" ]
